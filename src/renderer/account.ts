@@ -114,16 +114,16 @@ export class AccountManager {
         return this.mountedAccounts.find(acc => acc.id === account.id);
     }
 
-    saveAccounts() {
+    save() {
         Storage.write('accounts.json', JSON.stringify(this.mountedAccounts));
     }
 
-    unmountAccount(account: Account) {
+    unmount(account: Account) {
         this.mountedAccounts = this.mountedAccounts.filter(acc => acc !== account);
-        this.saveAccounts();
+        this.save();
     }
 
-    mountAccountsFromStorage() {
+    mountFromStorage(): readonly Account[] {
         const preliminaryReadJson = Storage.read('accounts.json');
         if (preliminaryReadJson) {
             const preliminaryRead = JSON.parse(preliminaryReadJson);
@@ -133,9 +133,10 @@ export class AccountManager {
                 console.warn("Couldn't mount accounts due to file corruption.");
             }
         }
+        return this.mountedAccounts;
     }
 
-    async mountAccountFromCookieAsync(cookie: string): Promise<Account> {
+    async mountFromCookieAsync(cookie: string): Promise<Account> {
         const userInfo = await this.getUserInfoFromCookieAsync(cookie);
 
         const newAccount: Account = {
@@ -152,7 +153,7 @@ export class AccountManager {
         }
 
         this.emit('account-created', existingAccount ?? newAccount);
-        this.saveAccounts();
+        this.save();
         return newAccount;
     }
 
