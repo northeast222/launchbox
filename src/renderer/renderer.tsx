@@ -12,7 +12,7 @@ import GamesList from './components/games-list';
 import AccountList from './components/account-list';
 
 function PanelTab({ icon, label }: { icon: string, label: string }) {
-    return <Tab className={({selected}) => `flex items-center justify-center p-2 gap-1 grow rounded ${selected ? 'bg-green-500 text-white shadow-md' : ''}`}>
+    return <Tab className={({selected}) => `flex items-center justify-center p-2 gap-1 grow rounded ${selected ? 'bg-green-500 text-white shadow-md' : 'dark:text-zinc-400'}`}>
             <Icon className="text-xl" icon={icon}/> {label}
         </Tab>
 }
@@ -58,7 +58,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
     }
 
     render() {
-        return <div className="flex flex-col gap-2 h-screen flex-grow bg-zinc-100">
+        return <div className="flex flex-col gap-2 h-screen flex-grow bg-zinc-100 dark:bg-zinc-800">
             <Tab.Group>
                 <Tab.List className="flex justify-evenly p-2 w-full shadow-md">
                     <PanelTab icon="fluent:globe-16-filled" label="Games"/>

@@ -41,5 +41,10 @@ export const endpoints = {
     getAvatarBust: {
         uri: 'https://thumbnails.roblox.com/v1/users/avatar-bust',
         format: (uri: string, [userId, size]: string[]) => `${uri}?userIds=${userId}&size=${size}&format=Png&isCircular=false`
+    },
+
+    getPlaceIcon: {
+        uri: 'https://thumbnails.roblox.com/v1/places/gameicons',
+        format: (uri: string, [placeId]: string[]) => `${uri}?placeIds=${placeId}&returnPolicy=PlaceHolder&size=128x128&format=Png&isCircular=false`
     }
 };

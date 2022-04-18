@@ -1,9 +1,10 @@
 
-import { app, BrowserWindow, WebContents, ipcMain, session } from "electron";
+import { app, BrowserWindow, WebContents, ipcMain, session, nativeTheme } from "electron";
 import path from 'path';
 
 // Launches the GUI.
 function guiMain() {
+    nativeTheme.themeSource = 'light';
     app.whenReady().then(() => {
         const mainWindow = new BrowserWindow({
             width: 900,

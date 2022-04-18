@@ -59,14 +59,14 @@ class AccountList extends React.Component<AccountListProps, AccountListState> {
 
     render() {
         return (
-            <div className="flex flex-col gap-2 p-2 max-w-sm h-screen bg-zinc-200">
+            <div className="flex flex-col gap-2 p-2 max-w-sm h-screen bg-zinc-200 dark:bg-zinc-900">
                 {this.state.listedAccounts.map(account =>
-                    <div className={`flex items-center p-2 gap-2 rounded ${account === this.state.selectedAccount ? 'bg-green-500' : 'bg-zinc-50'} hover:shadow-md hover:cursor-pointer transition-shadow`}
+                    <div className={`flex items-center p-2 gap-2 rounded ${account === this.state.selectedAccount ? 'bg-green-500' : 'bg-zinc-50 dark:bg-gray-800'} hover:shadow-md hover:cursor-pointer transition-shadow`}
                     onClick={() => this.selectAccount(account)}>
                         <AccountHeadshot account={account} manager={this.props.accountManager}/>
                         <div>
-                            <div className={`${account === this.state.selectedAccount ? 'text-white' : ''} text-xl font-bold`}>{account.username}</div>
-                            <div className={`${account === this.state.selectedAccount ? 'text-white' : 'text-gray-400'}`}>Last used on N/A</div>
+                            <div className={`${account === this.state.selectedAccount ? 'text-white' : 'dark:text-gray-400'} text-xl font-bold`}>{account.username}</div>
+                            <div className={`${account === this.state.selectedAccount ? 'text-white' : 'text-gray-400 dark:text-gray-600'}`}>Last used on N/A</div>
                         </div>
                         <div className="ml-auto mr-2">
                             <Icon className="text-gray-300 text-2xl hover:text-gray-600 transition-colors" icon="fluent:settings-16-regular"/>

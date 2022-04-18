@@ -1,8 +1,10 @@
 
 import noblox from 'noblox.js';
+import fetch from 'node-fetch';
 import { EventEmitter } from 'events';
 import * as yup from 'yup';
 
+import { endpoints, resolveEndpoint } from './endpoints';
 import Storage from "./storage";
 
 export interface Game {
@@ -30,6 +32,12 @@ export class GameManager {
 
     async getGameInformationAsync(placeid: number) {
         return await noblox.getProductInfo(placeid);
+    }
+
+    async getGameThumbnailAsync(placeid: number) {
+        const endpoint = resolveEndpoint(endpoints.getPlaceIcon, [placeid.toString()]);
+        const thumbReq = await (await fetch(endpoint)).json() as { data: {imageUrl: string}[] };
+        return thumbReq.data[0].imageUrl;
     }
 
 /*
