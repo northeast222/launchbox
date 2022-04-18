@@ -31,7 +31,7 @@ export const endpoints = {
     },
 
     getAuthenticationTicket: {
-        uri: 'https://www.roblox.com/v1/authentication-ticket/'
+        uri: 'https://auth.roblox.com/v1/authentication-ticket/'
     },
 
     getUserInfo: {

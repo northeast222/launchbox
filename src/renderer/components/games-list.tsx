@@ -1,9 +1,14 @@
 
 import React, { useState } from 'react';
+import { Icon } from '@iconify/react';
 
 import { GameManager, Game } from '../game';
+import Browser from '../browser';
+import Input from './input';
+import Button from './button';
 import Spinner from './spinner';
 import Cache from '../cache';
+import { Account, AccountManager } from '../account';
 
 function GameEntry({ game, selected, onClick, manager }: { manager: GameManager, game: Game, selected: boolean, onClick: () => void }) {
     const [gameTitle, setGameTitle] = useState(game.title);
@@ -50,7 +55,7 @@ function GameEntry({ game, selected, onClick, manager }: { manager: GameManager,
     </div> 
 }
 
-function GamesList({ gameManager }: { gameManager: GameManager }) {
+function GamesList({ gameManager, accountManager }: { gameManager: GameManager, accountManager: AccountManager }) {
     const [listedGames, setListedGames] = useState([
         {
             title: 'Classic: Crossroads',
@@ -68,11 +73,46 @@ function GamesList({ gameManager }: { gameManager: GameManager }) {
         gameManager.emit('game-selected', game);
     }
 
-    return <div className='flex flex-col gap-2'>
-            {listedGames.map(game => 
-                <GameEntry manager={gameManager} game={game} selected={game === selectedGame} onClick={() => selectGame(game)}/> 
-            )}
-        </div>
+    function quickJoin(account?: Account) {
+        if (!account) { return }
+        const joinBrowser = new Browser('Quick Join', account.username);
+        joinBrowser.start('https://www.roblox.com/discover/', [{ name: '.ROBLOSECURITY', value: account.cookie }]);
+        joinBrowser.protocol('roblox-player', (url) => {
+            console.log(decodeURIComponent(url));
+            joinBrowser.close();
+            Browser.native(url);
+        });
+    }
+
+    function joinSelected(account?: Account) {
+        if (account) {
+            accountManager.generateJoinLink(account, selectedGame.id).then(url => {
+                Browser.native(url);
+            });
+        }
+    }
+
+    return (
+        <div className="flex flex-col gap-2 h-full">
+            <div className='flex w-full gap-2'>
+                <Input classes="grow" value="" id="jobid" placeholder='Search for game'/>
+                <Button><Icon className='text-xl' icon="fluent:add-20-filled"/></Button>
+            </div>
+            <div className='flex flex-col gap-2 grow overflow-scroll'>
+                {listedGames.map(game => 
+                    <GameEntry manager={gameManager} game={game} selected={game === selectedGame} onClick={() => selectGame(game)}/> 
+                )}
+            </div>
+            <div className='flex w-full gap-2'>
+                <Input classes="grow" id="jobid" placeholder='Job ID (optional)'/>
+                <Button>Join JobId</Button>
+                <Button onClick={() => joinSelected(accountManager.selected)}>Join Selected</Button>
+            </div>
+            <div className="flex w-full">
+                <Button main onClick={() => quickJoin(accountManager.selected)} classes='grow'><Icon className='pr-1 text-2xl' icon="fluent:plug-connected-20-filled"
+                />Quick Join</Button>
+            </div>
+        </div>)
 }
 
 export default GamesList;

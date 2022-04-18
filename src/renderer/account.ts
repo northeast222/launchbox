@@ -62,11 +62,13 @@ export class AccountManager {
     }
 
     async getCsrfTokenAsync(account: Account): Promise<string | undefined> {
-        const authEndpoint = resolveEndpoint(endpoints.getAuthenticationTicket, []);
-        const anyGameReq = await fetch(authEndpoint, {
-            headers: this.buildHeaders(account, { referer: this.refUri })
-        });
-        return anyGameReq.headers.get('x-csrf-token') ?? undefined;
+        const anyGameReq = await (await fetch(this.refUri, {
+            headers: this.buildHeaders(account, { 
+                referer: this.refUri,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36'
+            })
+        })).text();
+        return anyGameReq.match(/<meta\s*name="csrf-token"\s*data-token=['"](.*?)['"]/)?.[1];
     }
 
     async getAuthenticationTicketAsync(account: Account): Promise<string> {
@@ -88,14 +90,23 @@ export class AccountManager {
         if (!ticket) {
             throw new Error('Failed to obtain authentication ticket.');
         }
+
         return ticket;
     }
 
     async getHeadshotImageUrl(account: Account): Promise<string> {
         const headshotEndpoint = resolveEndpoint(endpoints.getAvatarBust, [account.id.toString(), '48x48']);
         const headshotReq = await (await fetch(headshotEndpoint)).json() as { data: { imageUrl: string }[] };
-        console.log(headshotReq);
         return headshotReq.data[0].imageUrl;
+    }
+
+    async generateJoinLink(account: Account, placeid: number): Promise<string> {
+        const time = dayjs().unix();
+        const authTicket = await this.getAuthenticationTicketAsync(account);
+        if (!authTicket) {
+            throw new Error('There was a problem obtaining the authentication ticket. Try removing your account and logging back in.');
+        }
+        return `roblox-player:1+launchmode:play+gameinfo:${authTicket}+launchtime:${time}+placelauncherurl:https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestGame&browserTrackerId=${time}&placeId=${placeid}&isPlayTogetherGame=false+browsertrackerid:${time}+robloxLocale:en_us+gameLocale:en_us+channel:`;
     }
 
 /*
@@ -104,6 +115,9 @@ export class AccountManager {
 *   Loads, saves, and manages accs
 *   =================================
 */
+
+    private selectedInternal?: Account;
+    public get selected() { return this.selectedInternal; }
 
     private mountedAccounts: Account[];
     accounts(): readonly Account[] {
@@ -159,5 +173,9 @@ export class AccountManager {
 
     constructor() {
         this.mountedAccounts = [];
+
+        this.on('account-selected', (account: Account) => {
+            this.selectedInternal = account;
+        })
     }
 }
