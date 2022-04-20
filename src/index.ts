@@ -4,7 +4,6 @@ import path from 'path';
 
 // Launches the GUI.
 function guiMain() {
-    nativeTheme.themeSource = 'light';
     app.whenReady().then(() => {
         const mainWindow = new BrowserWindow({
             width: 900,

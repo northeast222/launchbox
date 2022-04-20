@@ -9,7 +9,7 @@ import Storage from "./storage";
 
 export interface Game {
     /* Last cached title. */
-    title: string;
+    title?: string;
 
     /* Place id. Used to retrieve place information. */
     id: number;
@@ -18,7 +18,7 @@ export interface Game {
 export type GameManagerEvents = 'game-mount' | 'game-unmount' | 'game-join' | 'game-selected';
 
 const gameStoreSchema = yup.array().of(yup.object().shape({
-    title: yup.string().required(),
+    title: yup.string().optional(),
     id: yup.number().positive().required()
 }));
 

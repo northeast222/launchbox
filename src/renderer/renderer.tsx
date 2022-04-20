@@ -13,7 +13,7 @@ import GamesList from './components/games-list';
 import AccountListOld from './components/account-list';
 
 function PanelTab({ icon, label }: { icon: string, label: string }) {
-    return <Tab className={({selected}) => `flex items-center justify-center p-2 gap-1 grow rounded ${selected ? 'bg-green-500 text-white shadow-md' : 'dark:text-zinc-400'}`}>
+    return <Tab className={({selected}) => `flex items-center justify-center p-2 gap-1 grow rounded ${selected ? 'bg-green-500 dark:bg-green-700 text-white shadow-md' : 'dark:text-zinc-400'}`}>
             <Icon className="text-xl" icon={icon}/> {label}
         </Tab>
 }
@@ -47,7 +47,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
                         <GamesList gameManager={this.props.gameManager} accountManager={this.props.accountManager}/>
                     </Tab.Panel>
                     <Tab.Panel unmount={false}>
-                        <Input disabled 
+                        <Input disabled
                             value={this.state.selectedAccount?.username ?? 'No account selected.'}
                             description="This is your username, not your nickname." 
                             id="username" label="Username" placeholder="This is your Roblox username."/>

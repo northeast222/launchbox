@@ -20,7 +20,7 @@ function AccountHeadshot({ account, manager }: { account: Account, manager: Acco
 
 function AccountList(props: AccountListProps) {
     const [listedAccounts, setListedAccounts] = useState<Account[]>([...props.accountManager.accounts()]);
-    const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(listedAccounts?.[0]);
+    const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
 
     function selectAccount(account?: Account) {
         props.accountManager.emit('account-selected', account);
@@ -57,12 +57,12 @@ function AccountList(props: AccountListProps) {
     return (
         <div className="flex flex-col gap-2 p-2 max-w-sm h-screen bg-zinc-200 dark:bg-zinc-900">
             {listedAccounts.map(account =>
-                <div className={`flex items-center p-2 gap-2 rounded ${account === selectedAccount ? 'bg-green-500' : 'bg-zinc-50 dark:bg-gray-800'} hover:shadow-md hover:cursor-pointer transition-shadow`}
+                <div key={account.id} className={`flex items-center p-2 gap-2 rounded ${account === selectedAccount ? 'bg-green-500 dark:bg-green-700' : 'bg-zinc-50 dark:bg-zinc-700'} hover:shadow-md hover:cursor-pointer transition-shadow`}
                 onClick={() => selectAccount(account)}>
                     <AccountHeadshot account={account} manager={props.accountManager}/>
                     <div>
-                        <div className={`${account === selectedAccount ? 'text-white' : 'dark:text-gray-400'} text-xl font-bold`}>{account.username}</div>
-                        <div className={`${account === selectedAccount ? 'text-white' : 'text-gray-400 dark:text-gray-600'}`}>Last used on N/A</div>
+                        <div className={`${account === selectedAccount ? 'text-white' : 'dark:text-white'} text-xl font-bold`}>{account.username}</div>
+                        <div className={`${account === selectedAccount ? 'text-white' : 'text-gray-400 dark:text-zinc-300'}`}>Last used on N/A</div>
                     </div>
                     <div className="ml-auto mr-2">
                         <Menu icon='fluent:settings-16-regular'>
@@ -72,7 +72,7 @@ function AccountList(props: AccountListProps) {
                 </div>
             )}
             <div onClick={() => addNewAccount()} 
-                className="flex flex-col p-2 rounded bg-green-500 text-white hover:shadow-md hover:cursor-pointer transition-shadow">
+                className="flex flex-col p-2 rounded bg-green-500 dark:bg-green-700 text-white hover:shadow-md hover:cursor-pointer transition-shadow">
                 <div className="text-xl font-bold">Add a new account.</div>
                 <div className="text-gray-100">You will have to authenticate into your Roblox account.</div>
             </div>

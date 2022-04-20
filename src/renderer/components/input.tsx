@@ -11,10 +11,11 @@ return <div className={classes}>
   <div className="mt-1">
     <input
       disabled={disabled}
+      readOnly={disabled}
       type="text"
       name={id}
       id={id}
-      className="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md"
+      className="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white rounded-md"
       placeholder={placeholder}
       value={value}
     />

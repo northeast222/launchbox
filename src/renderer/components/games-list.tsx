@@ -22,6 +22,7 @@ function GameEntry({ game, selected, onClick, vip, manager }:
         manager.getGameInformationAsync(game.id).then(info => {
             Cache.set(cacheTitleKey, info.Name);
             game.title = info.Name;
+            manager.save();
             setGameTitle(info.Name);
         });
     }
@@ -45,63 +46,85 @@ function GameEntry({ game, selected, onClick, vip, manager }:
     }
 
     return <div>
-        <div className={`flex items-center p-2 gap-2 rounded ${selected ? 'bg-green-500' : 'bg-zinc-50 dark:bg-zinc-700'} hover:shadow-md hover:cursor-pointer transition-shadow`}
+        <div className={`flex items-center p-2 gap-2 rounded ${selected ? 'bg-green-500 dark:bg-green-700' : 'bg-zinc-50 dark:bg-zinc-700'} hover:shadow-md hover:cursor-pointer transition-shadow`}
         onClick={onClick}>
             {((gameThumb && <img src={gameThumb} className="h-12 rounded"></img>) || <Spinner/>)}
             <div>
-                <div className={`${selected ? 'text-white' : 'dark:text-gray-400'} text-xl font-bold`}>{gameTitle}</div>
-                <div className={`${selected ? 'text-white' : 'text-gray-400 dark:text-gray-500'}`}>{(gameDesc && `${gameDesc.substring(0, 42)}...`) || game.id}</div>
+                <div className={`${selected ? 'text-white' : 'dark:text-white'} text-xl font-bold`}>{gameTitle}</div>
+                <div className={`${selected ? 'text-white' : 'text-gray-400 dark:text-zinc-300'}`}>{(gameDesc && `${gameDesc.substring(0, 42)}...`) || game.id}</div>
             </div>
         </div>
     </div> 
 }
 
 function GamesList({ gameManager, accountManager }: { gameManager: GameManager, accountManager: AccountManager }) {
-    const [listedGames, setListedGames] = useState([
-        {
-            title: 'Classic: Crossroads',
-            id: 1818
-        },
-        {
-            title: 'Classic: Crossroads',
-            id: 1818
-        },
-        ...gameManager.games()]);
-    const [selectedGame, setSelectedGame] = useState<Game>(listedGames[0]);
+    const [listedGames, setListedGames] = useState([...gameManager.games()]);
+    const [selectedGame, setSelectedGame] = useState<Game | undefined>(listedGames[0]);
 
     function selectGame(game: Game) {
         setSelectedGame(game);
         gameManager.emit('game-selected', game);
     }
 
+    function addGame(game: Game) {
+        gameManager.mount(game);
+    }
+
+    function chooseGameToAdd() {
+        if (accountManager.selected) {
+            const account = accountManager.selected;
+            const addBrowser = new Browser('Add game to list', `addGame-${account.username}`);
+            addBrowser.start('https://www.roblox.com/discover', [{ name: '.ROBLOSECURITY', value: account.cookie }]);
+            addBrowser.protocol('roblox-player', (url) => {
+                addBrowser.close();
+                
+                const decodedUrl = decodeURIComponent(url); // placeId=6299805723
+                const placeidMatch = decodedUrl.match(/placeId=(\d+)/)?.[1];
+                if (placeidMatch) {
+                    const tryParse = parseInt(placeidMatch);
+                    if (!isNaN(tryParse)) {
+                        addGame({ id: tryParse });
+                    }
+                }
+            });
+        }
+    }
+
     function quickJoin(account?: Account) {
         if (!account) { return }
-        const joinBrowser = new Browser('Quick Join', account.username);
+        const joinBrowser = new Browser('Quick Join', `quickJoin-${account.username}`);
         joinBrowser.start('https://www.roblox.com/discover/', [{ name: '.ROBLOSECURITY', value: account.cookie }]);
         joinBrowser.protocol('roblox-player', (url) => {
-            console.log(decodeURIComponent(url));
             joinBrowser.close();
             Browser.native(url);
         });
     }
 
     function joinSelected(account?: Account) {
-        if (account) {
-            accountManager.generateJoinLink(account, selectedGame.id).then(url => {
-                Browser.native(url);
-            });
+        if (account && selectedGame) {
+            accountManager.generateJoinLink(account, selectedGame.id).then(url => Browser.native(url));
         }
     }
+
+    gameManager.on('game-mount', (game: Game) => {
+        setListedGames([...gameManager.games()]);
+        setSelectedGame(gameManager.games()[0]);
+    });
+
+    gameManager.on('game-unmount', (game: Game) => {
+        setListedGames([...gameManager.games()]);
+        setSelectedGame(gameManager.games()[0]);
+    });
 
     return (
         <div className="flex flex-col gap-2 h-full">
             <div className='flex w-full gap-2'>
                 <Input classes="grow" value="" id="jobid" placeholder='Search for game'/>
-                <Button><Icon className='text-xl' icon="fluent:add-20-filled"/></Button>
+                <Button onClick={() => chooseGameToAdd()}><Icon className='text-xl' icon="fluent:add-20-filled"/></Button>
             </div>
-            <div className='flex flex-col gap-2 grow overflow-scroll'>
+            <div className='flex flex-col h-0 gap-2 grow overflow-scroll overflow-x-hidden'>
                 {listedGames.map(game => 
-                    <GameEntry manager={gameManager} game={game} selected={game === selectedGame} onClick={() => selectGame(game)}/> 
+                    <GameEntry key={game.id} manager={gameManager} game={game} selected={game === selectedGame} onClick={() => selectGame(game)}/> 
                 )}
             </div>
             <div className='flex w-full gap-2'>
