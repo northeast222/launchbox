@@ -10,7 +10,7 @@ import { AccountManager, Account } from './account';
 import { GameManager, Game } from './game';
 import Input from './components/input';
 import GamesList from './components/games-list';
-import AccountList from './components/account-list';
+import AccountListOld from './components/account-list';
 
 function PanelTab({ icon, label }: { icon: string, label: string }) {
     return <Tab className={({selected}) => `flex items-center justify-center p-2 gap-1 grow rounded ${selected ? 'bg-green-500 text-white shadow-md' : 'dark:text-zinc-400'}`}>
@@ -67,7 +67,7 @@ class LaunchboxApp extends React.Component {
     render() {
         return (
         <div className="flex select-none h-screen w-screen bg-black">
-            <AccountList accountManager={this.accountManager}/>
+            <AccountListOld accountManager={this.accountManager}/>
             <Panel accountManager={this.accountManager} gameManager={this.gameManager}/>
         </div>)
     }

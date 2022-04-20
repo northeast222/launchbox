@@ -134,6 +134,7 @@ export class AccountManager {
 
     unmount(account: Account) {
         this.mountedAccounts = this.mountedAccounts.filter(acc => acc !== account);
+        this.emit('account-removed', account);
         this.save();
     }
 
@@ -174,7 +175,7 @@ export class AccountManager {
     constructor() {
         this.mountedAccounts = [];
 
-        this.on('account-selected', (account: Account) => {
+        this.on('account-selected', (account?: Account) => {
             this.selectedInternal = account;
         })
     }

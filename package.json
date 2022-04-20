@@ -4,6 +4,7 @@
   "description": "Open source Roblox launcher with multi-account support",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc && shx cp ./src/renderer/base.html ./dist/renderer/ && postcss src/renderer/*.css --base src/renderer --dir dist/renderer",
     "start-gui": "electron . gui",
     "autodev": "concurrently \"tsc --watch\" \"postcss src/renderer/*.css --base src/renderer --dir dist/renderer --watch\""
   },
