@@ -10,7 +10,8 @@ import Spinner from './spinner';
 import Cache from '../cache';
 import { Account, AccountManager } from '../account';
 
-function GameEntry({ game, selected, onClick, manager }: { manager: GameManager, game: Game, selected: boolean, onClick: () => void }) {
+function GameEntry({ game, selected, onClick, vip, manager }: 
+    { manager: GameManager, game: Game, vip?: string, selected: boolean, onClick: () => void }) {
     const [gameTitle, setGameTitle] = useState(game.title);
     const [gameThumb, setGameThumb] = useState(undefined as unknown as string);
     const [gameDesc, setGameDesc] = useState(undefined as unknown as string);
