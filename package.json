@@ -22,8 +22,6 @@
     "@iconify/react": "^3.2.1",
     "@tailwindcss/forms": "^0.5.0",
     "@types/node-fetch": "^2.6.1",
-    "@types/react": "^18.0.5",
-    "@types/react-dom": "^18.0.1",
     "autoprefixer": "^10.4.4",
     "concurrently": "^7.1.0",
     "postcss": "^8.4.12",
@@ -39,8 +37,7 @@
     "electron": "^18.0.4",
     "noblox.js": "^4.13.1",
     "node-fetch": "^2.6.7",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "preact": "^10.7.2",
     "yup": "^0.32.11"
   }
 }

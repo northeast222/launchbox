@@ -1,12 +1,12 @@
 
 import { Menu as HMenu, Transition } from '@headlessui/react';
 import { Icon } from '@iconify/react';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import preact, { h, Fragment } from 'preact';
 
 export function MenuButton({ label, onClick }: { label: string, onClick: () => void }) {
     return <div>
         <HMenu.Item>
-            {({ active }) => (
+            {({ active }: { active: boolean }) => (
                 <button onClick={onClick} className={`${active ? 'bg-green-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
                     {label}
                 </button>
@@ -15,10 +15,9 @@ export function MenuButton({ label, onClick }: { label: string, onClick: () => v
     </div>
 }
 
-export function Menu({ icon, children }: React.PropsWithChildren<{
-    icon: string
-}>) {
+export function Menu({ icon, children }: { icon: string, children: preact.ComponentChildren }) {
     return (
+        //@ts-ignore
         <HMenu as='div' className='relative inline-block text-left'>
             <div>
                 <HMenu.Button className="text-black translate-y-1 text-xl opacity-50 hover:opacity-100 transition-opacity">

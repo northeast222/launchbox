@@ -1,5 +1,5 @@
 
-import React from 'react';
+import preact, { h } from 'preact';
 
 export function Input({ 
     id, classes, label, placeholder, value, disabled, description }: 

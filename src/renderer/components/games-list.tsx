@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import preact, { h } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
 import { Icon } from '@iconify/react';
 
 import { GameManager, Game } from '../game';
@@ -61,6 +62,18 @@ function GamesList({ gameManager, accountManager }: { gameManager: GameManager, 
     const [listedGames, setListedGames] = useState([...gameManager.games()]);
     const [selectedGame, setSelectedGame] = useState<Game | undefined>(listedGames[0]);
 
+    useEffect(() => {
+        gameManager.on('game-mount', (game: Game) => {
+            setListedGames([...gameManager.games()]);
+            setSelectedGame(game);
+        });
+    
+        gameManager.on('game-unmount', (game: Game) => {
+            setListedGames([...gameManager.games()]);
+            setSelectedGame(gameManager.games()[0]);
+        });
+    }, [])
+
     function selectGame(game: Game) {
         setSelectedGame(game);
         gameManager.emit('game-selected', game);
@@ -105,16 +118,6 @@ function GamesList({ gameManager, accountManager }: { gameManager: GameManager, 
             accountManager.generateJoinLink(account, selectedGame.id).then(url => Browser.native(url));
         }
     }
-
-    gameManager.on('game-mount', (game: Game) => {
-        setListedGames([...gameManager.games()]);
-        setSelectedGame(gameManager.games()[0]);
-    });
-
-    gameManager.on('game-unmount', (game: Game) => {
-        setListedGames([...gameManager.games()]);
-        setSelectedGame(gameManager.games()[0]);
-    });
 
     return (
         <div className="flex flex-col gap-2 h-full">

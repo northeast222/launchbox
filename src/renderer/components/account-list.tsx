@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import preact from 'preact';
+import { useState } from 'preact/hooks';
 import { Icon } from '@iconify/react';
 
 import Spinner from './spinner';
