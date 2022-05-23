@@ -6,9 +6,11 @@ import path from 'path';
 function guiMain() {
     app.whenReady().then(() => {
         const mainWindow = new BrowserWindow({
+            title: 'Launchbox',
             width: 900,
             height: 600,
             autoHideMenuBar: true,
+            icon: './logo.ico',
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false

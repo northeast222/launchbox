@@ -73,7 +73,7 @@ function AccountList(props: AccountListProps) {
                 </div>
             )}
             <div onClick={() => addNewAccount()} 
-                className="flex flex-col p-2 rounded bg-green-500 dark:bg-green-700 text-white hover:shadow-md hover:cursor-pointer transition-shadow">
+                className="flex flex-col p-2 rounded bg-green-500 dark:bg-green-700 hover:bg-green-600 dark:hover:bg-green-600 text-white hover:shadow-md hover:cursor-pointer transition-colors">
                 <div className="text-xl font-bold">Add a new account.</div>
                 <div className="text-gray-100">You will have to authenticate into your Roblox account.</div>
             </div>
