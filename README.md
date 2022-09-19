@@ -1,3 +1,5 @@
+### Note: This is pending a rewrite. While useable, a much better version will come soon. Stay tuned.
+
 <p align="center">
   <img width="223" height="223" src="https://i.imgur.com/ouuNaGu.png"></img><br>
   <b>launchbox</b>: an open-source Roblox launcher.
